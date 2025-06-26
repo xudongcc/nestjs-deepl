@@ -1,99 +1,238 @@
 # NestJS DeepL Module
 
-DeepL module for Nest framework.
+[![npm version](https://badge.fury.io/js/nestjs-deepl.svg)](https://badge.fury.io/js/nestjs-deepl)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 开发工具配置
+A NestJS module that provides seamless integration with the DeepL translation API. This module wraps the official DeepL Node.js client and makes it easy to use translation services in your NestJS applications.
 
-本项目配置了完整的代码质量工具链：
+## Features
 
-### 🛠️ 工具说明
+- 🔧 **Easy Integration**: Simple module setup with NestJS dependency injection
+- 🌍 **Translation Support**: Full access to DeepL's translation capabilities
+- ⚙️ **Configurable**: Flexible configuration options for different environments
+- 🔒 **Type Safe**: Built with TypeScript for better development experience
+- 📦 **Lightweight**: Minimal overhead with clean architecture
 
-- **Husky**: Git hooks 管理
-- **lint-staged**: 对暂存文件运行 linter
-- **ESLint**: JavaScript/TypeScript 代码检查
-- **Prettier**: 代码格式化
-- **Commitizen**: 标准化提交信息
-- **Commitlint**: 提交信息验证
-
-### 📝 可用的脚本命令
+## Installation
 
 ```bash
-# 代码检查
-pnpm lint          # 运行 ESLint 并自动修复
-pnpm lint:check    # 运行 ESLint 检查（不修复）
-
-# 代码格式化
-pnpm format        # 运行 Prettier 格式化
-pnpm format:check  # 检查代码格式（不修改）
-
-# 测试
-pnpm test          # 运行测试
-pnpm test:watch    # 监听模式运行测试
-pnpm test:cov      # 运行测试并生成覆盖率报告
-
-# 提交
-pnpm commit        # 使用 Commitizen 进行标准化提交
+npm install nestjs-deepl deepl-node
+# or
+yarn add nestjs-deepl deepl-node
+# or
+pnpm add nestjs-deepl deepl-node
 ```
 
-### 🔧 Git Hooks
+**Note**: This module requires `deepl-node` as a peer dependency. Make sure to install it alongside `nestjs-deepl`.
 
-项目配置了以下 Git hooks：
+## Prerequisites
 
-1. **pre-commit**:
-   - 运行 lint-staged（ESLint + Prettier + TypeScript 类型检查）
-   - 运行测试
+- Node.js (v18 or higher)
+- NestJS framework
+- DeepL API key ([Get one here](https://www.deepl.com/pro-api))
 
-2. **commit-msg**:
-   - 验证提交信息是否符合 Conventional Commits 规范
+## Quick Start
 
-### 📋 提交信息规范
+### 1. Import the Module
 
-使用 `pnpm commit` 或 `git cz` 进行提交，支持以下类型：
+```typescript
+import { Module } from '@nestjs/common';
+import { DeepLModule } from 'nestjs-deepl';
 
-- `feat`: 新功能
-- `fix`: 修复 bug
-- `docs`: 文档更新
-- `style`: 代码格式调整
-- `refactor`: 代码重构
-- `perf`: 性能优化
-- `test`: 测试相关
-- `build`: 构建系统
-- `ci`: CI/CD 相关
-- `chore`: 其他杂项
-- `revert`: 回滚提交
+@Module({
+  imports: [
+    DeepLModule.register({
+      authKey: 'your-deepl-api-key',
+    }),
+  ],
+})
+export class AppModule {}
+```
 
-### 🎯 工作流程
+### 2. Use the DeepL Client
 
-1. 开发代码
-2. 暂存文件：`git add .`
-3. 提交代码：`pnpm commit` 或 `git commit`
-4. Git hooks 会自动：
-   - 运行 lint-staged（格式化 + 检查）
-   - 运行测试
-   - 验证提交信息
+```typescript
+import { Injectable } from '@nestjs/common';
+import { DeepLClient } from 'deepl-node';
 
-### 📁 配置文件
+@Injectable()
+export class TranslationService {
+  constructor(private readonly deepLClient: DeepLClient) {}
 
-- `.prettierrc`: Prettier 配置
-- `.prettierignore`: Prettier 忽略文件
-- `eslint.config.mjs`: ESLint 配置
-- `.lintstagedrc.js`: lint-staged 配置
-- `commitlint.config.js`: Commitlint 配置
-- `.husky/`: Husky hooks 配置
+  async translateText(text: string, targetLang: string) {
+    try {
+      const result = await this.deepLClient.translateText(
+        text,
+        null,
+        targetLang,
+      );
+      return result.text;
+    } catch (error) {
+      throw new Error(`Translation failed: ${error.message}`);
+    }
+  }
+}
+```
 
-## 安装和运行
+## Configuration Options
+
+The module accepts all configuration options from the official DeepL Node.js client:
+
+```typescript
+DeepLModule.register({
+  authKey: 'your-deepl-api-key',
+  serverUrl: 'https://api-free.deepl.com', // Optional: for DeepL Free API
+  // Other DeepL client options...
+});
+```
+
+### Global Module
+
+To make the DeepL client available globally across your application:
+
+```typescript
+DeepLModule.register({
+  authKey: 'your-deepl-api-key',
+  isGlobal: true,
+});
+```
+
+### Async Configuration
+
+For dynamic configuration (e.g., from environment variables):
+
+```typescript
+DeepLModule.registerAsync({
+  useFactory: (configService: ConfigService) => ({
+    authKey: configService.get('DEEPL_API_KEY'),
+  }),
+  inject: [ConfigService],
+});
+```
+
+## API Reference
+
+### DeepLModule
+
+The main module class that provides the DeepL client.
+
+#### Static Methods
+
+- `register(options: DeepLModuleOptions)`: Configure the module with static options
+- `registerAsync(options: DeepLModuleAsyncOptions)`: Configure the module with async options
+
+### DeepLModuleOptions
+
+Extends the official DeepL client options:
+
+```typescript
+interface DeepLModuleOptions extends DeepLClientOptions {
+  authKey: string;
+}
+```
+
+## Examples
+
+### Basic Translation
+
+```typescript
+@Injectable()
+export class TranslationService {
+  constructor(private readonly deepLClient: DeepLClient) {}
+
+  async translateToGerman(text: string) {
+    const result = await this.deepLClient.translateText(text, null, 'DE');
+    return result.text;
+  }
+}
+```
+
+### Document Translation
+
+```typescript
+@Injectable()
+export class DocumentService {
+  constructor(private readonly deepLClient: DeepLClient) {}
+
+  async translateDocument(filePath: string, targetLang: string) {
+    const result = await this.deepLClient.translateDocument(
+      filePath,
+      targetLang,
+    );
+    return result;
+  }
+}
+```
+
+### Usage Statistics
+
+```typescript
+@Injectable()
+export class UsageService {
+  constructor(private readonly deepLClient: DeepLClient) {}
+
+  async getUsage() {
+    const usage = await this.deepLClient.getUsage();
+    return usage;
+  }
+}
+```
+
+## Environment Variables
+
+It's recommended to use environment variables for your DeepL API key:
 
 ```bash
-# 安装依赖
-pnpm install
-
-# 开发模式
-pnpm run build
-
-# 运行测试
-pnpm test
+# .env
+DEEPL_API_KEY=your-deepl-api-key
 ```
 
-## 许可证
+```typescript
+// app.module.ts
+DeepLModule.register({
+  authKey: process.env.DEEPL_API_KEY,
+});
+```
 
-MIT
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+### Development Setup
+
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Run tests: `pnpm test`
+4. Run linting: `pnpm lint`
+5. Build the project: `pnpm build`
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+**Xudong Huang**
+
+- Email: me@huangxudong.com
+- Website: https://www.huangxudong.com
+- GitHub: [@xudongdev](https://github.com/xudongdev)
+
+## Related Links
+
+- [DeepL API Documentation](https://www.deepl.com/docs-api)
+- [DeepL Node.js Client](https://github.com/DeepLcom/deepl-node)
+- [NestJS Documentation](https://nestjs.com/)
+- [NestJS Module Guide](https://docs.nestjs.com/modules)
+
+## Support
+
+If you encounter any issues or have questions, please:
+
+1. Check the [DeepL API documentation](https://www.deepl.com/docs-api)
+2. Search existing [issues](https://github.com/xudongdev/nestjs-deepl/issues)
+3. Create a new issue with detailed information
+
+---
+
+Made with ❤️ for the NestJS community

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+      - next
+      - beta
+      - '*.x'
 
 jobs:
   release:
@@ -46,4 +49,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm semantic-release
+        run: pnpm dlx semantic-release
