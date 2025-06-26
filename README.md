@@ -216,7 +216,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Email: me@huangxudong.com
 - Website: https://www.huangxudong.com
-- GitHub: [@xudongdev](https://github.com/xudongdev)
+- GitHub: [@xudongcc](https://github.com/xudongcc)
 
 ## Related Links
 
@@ -230,7 +230,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 If you encounter any issues or have questions, please:
 
 1. Check the [DeepL API documentation](https://www.deepl.com/docs-api)
-2. Search existing [issues](https://github.com/xudongdev/nestjs-deepl/issues)
+2. Search existing [issues](https://github.com/xudongcc/nestjs-deepl/issues)
 3. Create a new issue with detailed information
 
 ---

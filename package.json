@@ -16,11 +16,11 @@
     "email": "me@huangxudong.com",
     "url": "https://www.huangxudong.com"
   },
-  "bugs": "https://github.com/xudongdev/nestjs-deepl/issues",
-  "homepage": "https://github.com/xudongdev/nestjs-deepl#readme",
+  "bugs": "https://github.com/xudongcc/nestjs-deepl/issues",
+  "homepage": "https://github.com/xudongcc/nestjs-deepl#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xudongdev/nestjs-deepl.git"
+    "url": "https://github.com/xudongcc/nestjs-deepl.git"
   },
   "license": "MIT",
   "main": "dist/index.js",
