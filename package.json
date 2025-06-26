@@ -2,6 +2,11 @@
   "name": "nestjs-deepl",
   "version": "0.0.0-development",
   "description": "DeepL module for Nest framework.",
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=10.12.1"
+  },
   "keywords": [
     "nestjs",
     "deepl"
@@ -72,6 +77,6 @@
     "testEnvironment": "node"
   },
   "volta": {
-    "node": "20.19.3"
+    "node": "18.20.8"
   }
 }
